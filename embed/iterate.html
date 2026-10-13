@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><style>html,body{margin:0;height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}canvas{display:block;width:100vw;height:100vh}</style></head><body><canvas id=c></canvas><script>
+const c=document.getElementById("c"),x=c.getContext("2d");let W,H,D;function rs(){D=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}addEventListener("resize",rs);rs();
+const F="500 FONT_PX Rubik,Helvetica Neue,Arial,sans-serif";function font(p){x.font=F.replace("FONT_PX",p+"px")}
+function label(t,y){font(Math.max(11,Math.min(W,H)*.035));x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";x.fillText(t,W/2,y)}
+
+let tries=[],n=0;function attempt(){n++;const q=Math.max(0,1-n/30),pts=[],k=3+Math.floor((1-q)*60+Math.random()*3*q);const ph=Math.random()*6.28;
+for(let i=0;i<k;i++){const a=ph+i/k*6.28;pts.push([Math.cos(a)*(1+(Math.random()-.5)*q*.9),Math.sin(a)*(1+(Math.random()-.5)*q*.9)])}tries.push({pts,q,age:0});if(tries.length>6)tries.shift()}
+addEventListener("pointerdown",attempt);addEventListener("keydown",attempt);
+function f(){x.fillStyle="#000";x.fillRect(0,0,W,H);const R=Math.min(W,H)*.28;x.strokeStyle="#fff";x.lineJoin="round";
+tries.forEach((t,i)=>{const last=i==tries.length-1;x.globalAlpha=last?1:.12+.05*i;x.lineWidth=last?3:1.5;x.beginPath();t.pts.forEach((p,j)=>{const X=W/2+p[0]*R,Y=H*.46+p[1]*R;j?x.lineTo(X,Y):x.moveTo(X,Y)});x.closePath();x.stroke()});
+x.globalAlpha=.5;label(n?String(n):"tap",H*.9);x.globalAlpha=1;requestAnimationFrame(f)}f();
+</script></body></html>

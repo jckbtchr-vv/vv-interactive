@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><style>html,body{margin:0;height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}canvas{display:block;width:100vw;height:100vh}</style></head><body><canvas id=c></canvas><script>
+const c=document.getElementById("c"),x=c.getContext("2d");let W,H,D;function rs(){D=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}addEventListener("resize",rs);rs();
+const F="500 FONT_PX Rubik,Helvetica Neue,Arial,sans-serif";function font(p){x.font=F.replace("FONT_PX",p+"px")}
+function label(t,y){font(Math.max(11,Math.min(W,H)*.035));x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";x.fillText(t,W/2,y)}
+
+const N=24;let cells=[],still=0,last=performance.now(),shred=0;
+function grid(){const s=Math.min(W,H)*.6;return{s,ox:(W-s)/2,oy:(H-s)/2,g:s/N}}
+function poke(){shred=1;still=0;cells=cells.filter(()=>Math.random()<.35)}
+addEventListener("pointermove",poke);addEventListener("pointerdown",poke);addEventListener("keydown",poke);addEventListener("wheel",poke);
+function f(n){const dt=n-last;last=n;still+=dt;
+if(still>600&&cells.length<N*N&&Math.random()<.5){const k=Math.floor(Math.random()*N*N);if(!cells.includes(k))cells.push(k)}
+shred=Math.max(0,shred-dt/400);const{ox,oy,g,s}=grid();x.fillStyle="#000";x.fillRect(0,0,W,H);
+x.strokeStyle="#fff";x.globalAlpha=.25;x.lineWidth=1;x.strokeRect(ox,oy,s,s);x.globalAlpha=1;x.fillStyle="#fff";
+for(const k of cells){const i=k%N,j=(k/N)|0;const jx=shred*(Math.random()-.5)*g*3;x.fillRect(ox+i*g+jx,oy+j*g,g-1,g-1)}
+if(shred>0){x.fillStyle="#fff";for(let i=0;i<8*shred;i++)x.fillRect(ox,oy+Math.random()*s,s,2)}
+x.globalAlpha=.4;label(cells.length==N*N?"focus":cells.length?"":"be still",oy+s+(H-oy-s)/2);x.globalAlpha=1;
+requestAnimationFrame(f)}requestAnimationFrame(f);
+</script></body></html>

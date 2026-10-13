@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><style>html,body{margin:0;height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}canvas{display:block;width:100vw;height:100vh}</style></head><body><canvas id=c></canvas><script>
+const c=document.getElementById("c"),x=c.getContext("2d");let W,H,D;function rs(){D=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}addEventListener("resize",rs);rs();
+const F="500 FONT_PX Rubik,Helvetica Neue,Arial,sans-serif";function font(p){x.font=F.replace("FONT_PX",p+"px")}
+function label(t,y){font(Math.max(11,Math.min(W,H)*.035));x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";x.fillText(t,W/2,y)}
+
+let t=0,hold=false;const dn=()=>hold=true,up=()=>hold=false;
+addEventListener("pointerdown",dn);addEventListener("pointerup",up);addEventListener("pointercancel",up);addEventListener("keydown",e=>{if(e.code=="Space")hold=true});addEventListener("keyup",up);
+function fmt(n){return n>=1e12?(n/1e12).toFixed(1)+"T":n>=1e9?(n/1e9).toFixed(1)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":String(Math.round(n))}
+function f(){if(hold)t=Math.min(40,t+.06);else if(t>0&&t<40)t=Math.max(0,t-.02);
+x.fillStyle="#000";x.fillRect(0,0,W,H);const s=Math.floor(t),a=1+2*s,b=Math.pow(2,s),top=H*.16,bot=H*.8,h=bot-top,cw=W*.12;
+const ha=h*Math.min(1,a/81),hb=h*Math.min(1,Math.log2(b+1)/6);
+x.fillStyle="#fff";x.fillRect(W*.33-cw/2,bot-ha,cw,ha);
+x.fillRect(W*.67-cw/2,bot-hb,cw,hb);
+font(Math.min(W,H)*.06);x.textAlign="center";x.textBaseline="alphabetic";x.fillText("+2",W*.33,H*.93);x.fillText("x2",W*.67,H*.93);
+font(Math.min(W,H)*.04);x.textBaseline="bottom";x.fillText(fmt(a),W*.33,bot-ha-8);x.fillText(fmt(b),W*.67,Math.max(top-4,bot-hb-8)+(hb>=h?0:0));
+x.globalAlpha=.4;font(Math.min(W,H)*.03);x.textBaseline="top";x.fillText(t==0?"hold":"step "+s,W/2,H*.04);x.globalAlpha=1;
+requestAnimationFrame(f)}f();
+</script></body></html>

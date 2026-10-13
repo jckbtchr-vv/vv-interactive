@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><style>html,body{margin:0;height:100%;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}canvas{display:block;width:100vw;height:100vh}</style></head><body><canvas id=c></canvas><script>
+const c=document.getElementById("c"),x=c.getContext("2d");let W,H,D;function rs(){D=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}addEventListener("resize",rs);rs();
+const F="500 FONT_PX Rubik,Helvetica Neue,Arial,sans-serif";function font(p){x.font=F.replace("FONT_PX",p+"px")}
+function label(t,y){font(Math.max(11,Math.min(W,H)*.035));x.fillStyle="#fff";x.textAlign="center";x.textBaseline="middle";x.fillText(t,W/2,y)}
+
+const t0=performance.now();const r=Math.log(1000)/600; // 1000x over 10 minutes
+function f(){const s=(performance.now()-t0)/1000;x.fillStyle="#000";x.fillRect(0,0,W,H);
+const L=W*.1,R=W*.9,B=H*.82,T=H*.12,span=600;x.strokeStyle="#fff";x.lineWidth=2;x.globalAlpha=.25;x.beginPath();x.moveTo(L,B);x.lineTo(R,B);x.stroke();x.globalAlpha=1;
+x.lineWidth=3;x.beginPath();for(let i=0;i<=200;i++){const u=i/200,ts=u*s,v=(Math.exp(r*ts)-1)/999;const px=L+(R-L)*(ts/span),py=B-(B-T)*Math.min(1,v);i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke();
+const m=Math.floor(s/60),sec=Math.floor(s%60);x.globalAlpha=.5;label((m?m+"m ":"")+sec+"s",H*.92);x.globalAlpha=1;
+requestAnimationFrame(f)}f();
+</script></body></html>
